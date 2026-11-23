@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://astrotalkpk.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astrotalkpk.com/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ur" href="https://astrotalkpk.com/?lang=ur"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://astrotalkpk.com/?lang=ar"/>
+    <priority>1.0</priority>
+  </url>
+  <url><loc>https://astrotalkpk.com/services</loc><priority>0.9</priority></url>
+  <url><loc>https://astrotalkpk.com/services/astrology</loc><priority>0.9</priority></url>
+  <url><loc>https://astrotalkpk.com/services/rohani-ilaj</loc><priority>0.9</priority></url>
+  <url><loc>https://astrotalkpk.com/services/kala-jadu-ka-tor</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/services/online-istikhara</loc><priority>0.9</priority></url>
+  <url><loc>https://astrotalkpk.com/services/marriage-istikhara</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/services/dua-and-wazifa</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/services/numerology</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/services/marriage-relationship-guidance</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/services/family-guidance</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/services/spiritual-consultation</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/experts</loc><priority>0.9</priority></url>
+  <url><loc>https://astrotalkpk.com/tools</loc><priority>0.9</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/birth-chart</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/sun-sign</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/moon-sign</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/rising-sign</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/abjad-numerology</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/life-path</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/name-compatibility</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/zodiac-compatibility</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/hijri-calendar</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/tools/moon-phase</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/knowledge</loc><priority>0.8</priority></url>
+  <url><loc>https://astrotalkpk.com/about</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/contact</loc><priority>0.7</priority></url>
+  <url><loc>https://astrotalkpk.com/privacy</loc><priority>0.5</priority></url>
+  <url><loc>https://astrotalkpk.com/terms</loc><priority>0.5</priority></url>
+  <url><loc>https://astrotalkpk.com/disclaimer</loc><priority>0.5</priority></url>
+</urlset>

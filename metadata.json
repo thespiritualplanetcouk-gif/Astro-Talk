@@ -1,0 +1,6 @@
+{
+  "name": "ASTROTALK PK",
+  "description": "International online astrology, spiritual guidance, Istikhara, and personal consultation platform connecting overseas Pakistanis worldwide with specialists in English, Urdu, and Arabic.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
