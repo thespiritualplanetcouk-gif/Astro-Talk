@@ -1,10 +1,12 @@
 import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
+import http from 'node:http';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import { WebSocketServer, WebSocket } from 'ws';
 
 dotenv.config();
 
@@ -50,8 +52,28 @@ interface ContactEnquiry {
   createdAtUtc: string;
 }
 
+interface ChatMessageRecord {
+  id: string;
+  sender: 'customer' | 'support' | 'system';
+  senderName: string;
+  text: string;
+  createdAtUtc: string;
+}
+
+interface ChatSessionRecord {
+  sessionId: string;
+  sessionToken: string;
+  customerName: string;
+  customerContact: string;
+  language: 'en' | 'ur' | 'ar';
+  createdAtUtc: string;
+  updatedAtUtc: string;
+  messages: ChatMessageRecord[];
+}
+
 const consultations: ConsultationRecord[] = [];
 const enquiries: ContactEnquiry[] = [];
+const chatSessions = new Map<string, ChatSessionRecord>();
 
 // --- Rate Limiter (Per-IP sliding window) ---
 const rateBuckets = new Map<string, number[]>();
@@ -111,6 +133,15 @@ function issueSessionToken(): string {
   return token;
 }
 
+function validateAdminToken(token: string): boolean {
+  const session = activeSessions.get(token);
+  if (!session || session.expiresAt < Date.now()) {
+    activeSessions.delete(token);
+    return false;
+  }
+  return true;
+}
+
 function requireAdminAuth(req: Request, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization ?? '';
   if (!authHeader.startsWith('Bearer ')) {
@@ -118,9 +149,7 @@ function requireAdminAuth(req: Request, res: Response, next: NextFunction): void
     return;
   }
   const token = authHeader.slice(7).trim();
-  const session = activeSessions.get(token);
-  if (!session || session.expiresAt < Date.now()) {
-    activeSessions.delete(token);
+  if (!validateAdminToken(token)) {
     res.status(401).json({ error: 'Session expired or invalid.' });
     return;
   }
@@ -140,8 +169,27 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^[0-9\s\-()]{6,20}$/;
 const CALLING_CODE_RE = /^\+[0-9]{1,4}$/;
 
+function serializeSessionForAdmin(s: ChatSessionRecord) {
+  return {
+    sessionId: s.sessionId,
+    customerName: s.customerName,
+    customerContact: s.customerContact,
+    language: s.language,
+    createdAtUtc: s.createdAtUtc,
+    updatedAtUtc: s.updatedAtUtc,
+    messages: s.messages,
+  };
+}
+
+function listAdminChatSessions() {
+  return Array.from(chatSessions.values())
+    .sort((a, b) => b.updatedAtUtc.localeCompare(a.updatedAtUtc))
+    .map(serializeSessionForAdmin);
+}
+
 async function startServer() {
   const app = express();
+  const httpServer = http.createServer(app);
   app.set('trust proxy', 1);
   app.use(express.json({ limit: '64kb' }));
 
@@ -152,12 +200,278 @@ async function startServer() {
     next();
   });
 
+  // --- Real-Time WebSocket Live Chat Hub (/ws/chat) ---
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws/chat' });
+  const customerRooms = new Map<string, Set<WebSocket>>();
+  const adminSockets = new Set<WebSocket>();
+
+  function safeSend(ws: WebSocket, payload: Record<string, unknown>) {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(payload));
+    }
+  }
+
+  function broadcastPresence() {
+    const supportOnline = adminSockets.size > 0;
+    const msg = JSON.stringify({ type: 'presence', supportOnline });
+    for (const sockets of customerRooms.values()) {
+      for (const sock of sockets) {
+        if (sock.readyState === WebSocket.OPEN) sock.send(msg);
+      }
+    }
+  }
+
+  function broadcastAdminSessions() {
+    const payload = JSON.stringify({
+      type: 'admin:sessions',
+      sessions: listAdminChatSessions(),
+    });
+    for (const adminWs of adminSockets) {
+      if (adminWs.readyState === WebSocket.OPEN) adminWs.send(payload);
+    }
+  }
+
+  function broadcastToCustomerRoom(sessionId: string, payload: Record<string, unknown>) {
+    const room = customerRooms.get(sessionId);
+    if (!room) return;
+    const serialized = JSON.stringify(payload);
+    for (const sock of room) {
+      if (sock.readyState === WebSocket.OPEN) sock.send(serialized);
+    }
+  }
+
+  wss.on('connection', (ws) => {
+    let role: 'unauthenticated' | 'customer' | 'admin' = 'unauthenticated';
+    let boundSessionId: string | null = null;
+    let messageCountWindow = 0;
+    let windowStart = Date.now();
+
+    ws.on('message', (raw) => {
+      const now = Date.now();
+      if (now - windowStart > 10_000) {
+        windowStart = now;
+        messageCountWindow = 0;
+      }
+      messageCountWindow += 1;
+      if (messageCountWindow > 25) {
+        safeSend(ws, { type: 'error', message: 'Rate limit exceeded. Please pause briefly.' });
+        return;
+      }
+
+      let data: Record<string, unknown>;
+      try {
+        data = JSON.parse(raw.toString()) as Record<string, unknown>;
+      } catch {
+        safeSend(ws, { type: 'error', message: 'Invalid message format.' });
+        return;
+      }
+
+      const type = cleanText(data.type, 40);
+
+      if (type === 'ping') {
+        safeSend(ws, { type: 'pong', supportOnline: adminSockets.size > 0 });
+        return;
+      }
+
+      // Customer authenticates into their private room with server-issued sessionToken
+      if (type === 'customer:join') {
+        const sessionId = cleanText(data.sessionId, 80);
+        const sessionToken = cleanText(data.sessionToken, 128);
+        const session = chatSessions.get(sessionId);
+        if (!session || session.sessionToken !== sessionToken) {
+          safeSend(ws, { type: 'error', message: 'Chat session invalid or expired.' });
+          return;
+        }
+        role = 'customer';
+        boundSessionId = sessionId;
+        if (!customerRooms.has(sessionId)) {
+          customerRooms.set(sessionId, new Set());
+        }
+        customerRooms.get(sessionId)!.add(ws);
+
+        safeSend(ws, {
+          type: 'chat:joined',
+          sessionId,
+          supportOnline: adminSockets.size > 0,
+          messages: session.messages,
+        });
+        return;
+      }
+
+      // Customer sends message into their authenticated room
+      if (type === 'customer:message' && role === 'customer' && boundSessionId) {
+        const session = chatSessions.get(boundSessionId);
+        if (!session) return;
+
+        const text = cleanText(data.text, 1000);
+        if (!text) return;
+
+        const clientMsgId = cleanText(data.id, 80) || crypto.randomUUID();
+        if (session.messages.some((m) => m.id === clientMsgId)) {
+          return; // Idempotent deduplication
+        }
+
+        const senderName = cleanText(data.senderName, 80);
+        const customerContact = cleanText(data.contact, 120);
+        if (senderName) session.customerName = senderName;
+        if (customerContact) session.customerContact = customerContact;
+
+        const msg: ChatMessageRecord = {
+          id: clientMsgId,
+          sender: 'customer',
+          senderName: session.customerName || 'Guest Visitor',
+          text,
+          createdAtUtc: new Date().toISOString(),
+        };
+        session.messages.push(msg);
+        if (session.messages.length > 120) session.messages.shift();
+        session.updatedAtUtc = msg.createdAtUtc;
+
+        broadcastToCustomerRoom(boundSessionId, { type: 'chat:message', message: msg });
+        broadcastAdminSessions();
+        return;
+      }
+
+      // Admin authenticates via Bearer token sent in message payload (never in URL query)
+      if (type === 'admin:auth') {
+        const token = cleanText(data.token, 128);
+        if (!validateAdminToken(token)) {
+          safeSend(ws, { type: 'error', message: 'Unauthorized admin session.' });
+          ws.close();
+          return;
+        }
+        role = 'admin';
+        adminSockets.add(ws);
+        safeSend(ws, {
+          type: 'admin:authenticated',
+          sessions: listAdminChatSessions(),
+        });
+        broadcastPresence();
+        return;
+      }
+
+      // Admin sends live reply to a specific customer session
+      if (type === 'admin:reply' && role === 'admin') {
+        const targetSessionId = cleanText(data.sessionId, 80);
+        const text = cleanText(data.text, 1200);
+        const session = chatSessions.get(targetSessionId);
+        if (!session || !text) return;
+
+        const msgId = cleanText(data.id, 80) || crypto.randomUUID();
+        if (session.messages.some((m) => m.id === msgId)) return;
+
+        const msg: ChatMessageRecord = {
+          id: msgId,
+          sender: 'support',
+          senderName: 'AstroTalk PK Support Desk',
+          text,
+          createdAtUtc: new Date().toISOString(),
+        };
+        session.messages.push(msg);
+        if (session.messages.length > 120) session.messages.shift();
+        session.updatedAtUtc = msg.createdAtUtc;
+
+        broadcastToCustomerRoom(targetSessionId, { type: 'chat:message', message: msg });
+        broadcastAdminSessions();
+      }
+    });
+
+    ws.on('close', () => {
+      if (role === 'customer' && boundSessionId) {
+        const room = customerRooms.get(boundSessionId);
+        if (room) {
+          room.delete(ws);
+          if (room.size === 0) customerRooms.delete(boundSessionId);
+        }
+      }
+      if (role === 'admin') {
+        adminSockets.delete(ws);
+        broadcastPresence();
+      }
+    });
+  });
+
   // --- Health & Persistence Status ---
   app.get('/api/health', (_req, res) => {
     res.json({
       ok: true,
       serverUtc: new Date().toISOString(),
       storageMode: 'transient-memory',
+      supportOnline: adminSockets.size > 0,
+    });
+  });
+
+  // --- Live Chat REST Endpoints ---
+  app.get('/api/chat/status', (_req, res) => {
+    res.json({
+      supportOnline: adminSockets.size > 0,
+      activeAdmins: adminSockets.size,
+      serverUtc: new Date().toISOString(),
+    });
+  });
+
+  app.post('/api/chat/session', (req, res) => {
+    const ip = req.ip ?? 'unknown';
+    if (!checkRateLimit(`chat-session:${ip}`, 20, 10 * 60 * 1000)) {
+      res.status(429).json({ error: 'Too many chat sessions started. Please wait briefly.' });
+      return;
+    }
+
+    const body = req.body ?? {};
+    const customerName = cleanText(body.customerName, 80) || 'Guest Visitor';
+    const customerContact = cleanText(body.customerContact, 120);
+    const rawLang = cleanText(body.language, 4);
+    const language = (VALID_LANGS.has(rawLang) ? rawLang : 'en') as 'en' | 'ur' | 'ar';
+
+    // Allow resuming an existing valid session if sessionId & sessionToken match
+    const existingId = cleanText(body.sessionId, 80);
+    const existingToken = cleanText(body.sessionToken, 128);
+    if (existingId && existingToken) {
+      const existing = chatSessions.get(existingId);
+      if (existing && existing.sessionToken === existingToken) {
+        if (body.customerName) existing.customerName = customerName;
+        if (body.customerContact) existing.customerContact = customerContact;
+        res.json({
+          ok: true,
+          sessionId: existing.sessionId,
+          sessionToken: existing.sessionToken,
+          supportOnline: adminSockets.size > 0,
+          messages: existing.messages,
+        });
+        return;
+      }
+    }
+
+    const sessionId = `CHAT-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+    const sessionToken = crypto.randomBytes(24).toString('hex');
+    const nowUtc = new Date().toISOString();
+
+    const record: ChatSessionRecord = {
+      sessionId,
+      sessionToken,
+      customerName,
+      customerContact,
+      language,
+      createdAtUtc: nowUtc,
+      updatedAtUtc: nowUtc,
+      messages: [],
+    };
+
+    chatSessions.set(sessionId, record);
+    // Keep memory bounded
+    if (chatSessions.size > 200) {
+      const oldestKey = chatSessions.keys().next().value;
+      if (oldestKey) chatSessions.delete(oldestKey);
+    }
+
+    broadcastAdminSessions();
+
+    res.status(201).json({
+      ok: true,
+      sessionId,
+      sessionToken,
+      supportOnline: adminSockets.size > 0,
+      messages: [],
     });
   });
 
@@ -170,7 +484,6 @@ async function startServer() {
     }
 
     const body = req.body ?? {};
-    // Honeypot anti-spam trap
     if (typeof body.website === 'string' && body.website.trim().length > 0) {
       res.status(400).json({ error: 'Invalid submission.' });
       return;
@@ -211,7 +524,6 @@ async function startServer() {
       return;
     }
 
-    // Parse provided UTC timestamp or fallback safely
     let utcTimestamp = new Date().toISOString();
     if (typeof body.utcTimestamp === 'string' && !Number.isNaN(Date.parse(body.utcTimestamp))) {
       utcTimestamp = new Date(body.utcTimestamp).toISOString();
@@ -359,9 +671,42 @@ async function startServer() {
     res.json({
       consultations,
       enquiries,
+      chats: listAdminChatSessions(),
       storageMode: 'transient-memory',
       serverUtc: new Date().toISOString(),
     });
+  });
+
+  app.get('/api/admin/chats', requireAdminAuth, (_req, res) => {
+    res.json({
+      chats: listAdminChatSessions(),
+      supportOnline: adminSockets.size > 0,
+    });
+  });
+
+  app.post('/api/admin/chats/:sessionId/reply', requireAdminAuth, (req, res) => {
+    const session = chatSessions.get(req.params.sessionId);
+    if (!session) {
+      res.status(404).json({ error: 'Chat session not found.' });
+      return;
+    }
+    const text = cleanText(req.body?.text, 1200);
+    if (!text) {
+      res.status(400).json({ error: 'Reply message cannot be empty.' });
+      return;
+    }
+    const msg: ChatMessageRecord = {
+      id: crypto.randomUUID(),
+      sender: 'support',
+      senderName: 'AstroTalk PK Support Desk',
+      text,
+      createdAtUtc: new Date().toISOString(),
+    };
+    session.messages.push(msg);
+    session.updatedAtUtc = msg.createdAtUtc;
+    broadcastToCustomerRoom(session.sessionId, { type: 'chat:message', message: msg });
+    broadcastAdminSessions();
+    res.status(201).json({ ok: true, message: msg });
   });
 
   app.patch('/api/admin/appointments/:id', requireAdminAuth, (req, res) => {
@@ -417,7 +762,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`ASTROTALK PK server listening on http://0.0.0.0:${PORT}`);
   });
 }

@@ -148,79 +148,79 @@ export function BookingModal() {
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#040914]/80 backdrop-blur-sm overflow-y-auto"
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-6 bg-[#15243A]/60 backdrop-blur-sm overflow-y-auto"
           role="dialog"
           aria-modal="true"
           aria-labelledby="booking-modal-title"
         >
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
-            className="relative w-full max-w-2xl bg-[#0B172C] border border-[#C6A35A]/30 shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.22 }}
+            className="relative w-full max-w-2xl bg-[#FAF8F2] border border-[#C6A15B]/50 shadow-2xl sm:my-8 max-h-[92vh] overflow-y-auto text-[#26332D]"
           >
             {/* Header */}
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 p-6 bg-[#0B172C] border-b border-[#C6A35A]/20">
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 p-5 sm:p-6 bg-[#164E3C] text-white border-b border-[#C6A15B]/40">
               <div>
                 <h2
                   id="booking-modal-title"
-                  className="font-display text-2xl sm:text-3xl font-semibold text-[#F6F2E9]"
+                  className="font-display text-2xl sm:text-3xl font-semibold text-white"
                 >
                   {t.booking.modalTitle}
                 </h2>
-                <p className="text-xs text-[#A9B2BE] mt-1">{t.booking.modalSubtitle}</p>
+                <p className="text-xs text-[#EAD9AD] mt-1">{t.booking.modalSubtitle}</p>
               </div>
               <button
                 type="button"
                 onClick={closeBooking}
                 aria-label="Close modal"
-                className="p-2 text-[#A9B2BE] hover:text-[#F6F2E9] cursor-pointer"
+                className="p-2 text-[#EAD9AD] hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-5 sm:p-6">
               {confirmation ? (
                 <div className="py-6 space-y-6">
                   <div className="flex items-start gap-4">
-                    <CheckCircle2 className="w-7 h-7 text-[#E5CD91] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-7 h-7 text-[#164E3C] shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="font-display text-2xl text-[#F6F2E9] font-semibold">
+                      <h3 className="font-display text-2xl text-[#15243A] font-semibold">
                         {t.booking.successTitle}
                       </h3>
-                      <p className="text-sm text-[#A9B2BE] mt-2 leading-relaxed">
+                      <p className="text-sm text-[#4A5A53] mt-2 leading-relaxed">
                         {t.booking.successBody}
                       </p>
                     </div>
                   </div>
 
-                  <dl className="border border-[#C6A35A]/20 bg-[#091426] p-5 space-y-3 text-sm">
+                  <dl className="border border-[#C6A15B]/40 bg-white p-5 space-y-3 text-sm">
                     <div className="flex justify-between gap-4">
-                      <dt className="text-[#A9B2BE]">{t.booking.referenceLabel}</dt>
-                      <dd className="tabular-nums-mono font-semibold text-[#E5CD91]">
+                      <dt className="text-[#6E7E77]">{t.booking.referenceLabel}</dt>
+                      <dd className="tabular-nums-mono font-semibold text-[#164E3C]">
                         {confirmation.reference}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <dt className="text-[#A9B2BE]">{t.booking.utcStoredLabel}</dt>
-                      <dd className="tabular-nums-mono text-[#F6F2E9]">
+                      <dt className="text-[#6E7E77]">{t.booking.utcStoredLabel}</dt>
+                      <dd className="tabular-nums-mono text-[#26332D]">
                         {confirmation.utcTimestamp}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <dt className="text-[#A9B2BE]">{t.booking.timeZone}</dt>
-                      <dd className="text-[#F6F2E9]">{confirmation.customerTimeZone}</dd>
+                      <dt className="text-[#6E7E77]">{t.booking.timeZone}</dt>
+                      <dd className="text-[#26332D]">{confirmation.customerTimeZone}</dd>
                     </div>
                   </dl>
 
-                  <p className="text-xs text-[#8F9BA9]">{confirmation.storageNotice}</p>
+                  <p className="text-xs text-[#6E7E77]">{confirmation.storageNotice}</p>
 
                   <button
                     type="button"
                     onClick={closeBooking}
-                    className="w-full py-3 px-6 bg-[#C6A35A] text-[#091426] font-semibold text-sm hover:bg-[#E5CD91] transition-colors cursor-pointer"
+                    className="w-full py-3.5 px-6 bg-[#164E3C] text-white font-semibold text-sm hover:bg-[#26745A] transition-colors cursor-pointer"
                   >
                     {t.booking.closeButton}
                   </button>
@@ -242,16 +242,16 @@ export function BookingModal() {
 
                   {/* Fee Transparency Banner when specialist selected */}
                   {selectedExpert && (
-                    <div className="p-4 bg-[#0C3028]/55 border border-[#C6A35A]/25 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+                    <div className="p-4 bg-[#F1F5EF] border border-[#164E3C]/25 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
                       <div>
-                        <span className="text-[#E5CD91] font-medium block">
+                        <span className="text-[#164E3C] font-semibold block">
                           {t.booking.feeDisclosure}
                         </span>
-                        <span className="text-[#D6DCE5]">
+                        <span className="text-[#4A5A53]">
                           {loc(selectedExpert.name)} · {selectedExpert.sessionDurationMinutes} min
                         </span>
                       </div>
-                      <span className="tabular-nums-mono text-base font-semibold text-[#F6F2E9]">
+                      <span className="tabular-nums-mono text-base font-semibold text-[#15243A]">
                         PKR {selectedExpert.feePkr.toLocaleString()}
                       </span>
                     </div>
@@ -260,7 +260,7 @@ export function BookingModal() {
                   {errorMsg && (
                     <div
                       role="alert"
-                      className="p-3.5 text-xs bg-[#3A161A] border border-[#E07A7A]/40 text-[#F6D6D6]"
+                      className="p-3.5 text-xs bg-red-50 border border-red-300 text-red-900"
                     >
                       {errorMsg}
                     </div>
@@ -268,7 +268,7 @@ export function BookingModal() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-name">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-name">
                         {t.booking.fullName} *
                       </label>
                       <input
@@ -279,12 +279,12 @@ export function BookingModal() {
                         maxLength={100}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-email">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-email">
                         {t.booking.emailOptional}
                       </label>
                       <input
@@ -293,7 +293,7 @@ export function BookingModal() {
                         maxLength={120}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       />
                     </div>
                   </div>
@@ -301,14 +301,14 @@ export function BookingModal() {
                   {/* International Calling Code + Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                     <div className="sm:col-span-5">
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-code">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-code">
                         {t.booking.countryCode} *
                       </label>
                       <select
                         id="bk-code"
                         value={countryCode}
                         onChange={(e) => handleCountryChange(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       >
                         {INTERNATIONAL_COUNTRIES.map((c) => (
                           <option key={`${c.iso}-${c.dialCode}`} value={c.dialCode}>
@@ -318,7 +318,7 @@ export function BookingModal() {
                       </select>
                     </div>
                     <div className="sm:col-span-7">
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-phone">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-phone">
                         {t.booking.phoneNumber} *
                       </label>
                       <input
@@ -328,7 +328,7 @@ export function BookingModal() {
                         placeholder="7700 900123"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-sm tabular-nums-mono bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3.5 py-2.5 text-sm tabular-nums-mono bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       />
                     </div>
                   </div>
@@ -336,14 +336,14 @@ export function BookingModal() {
                   {/* Service & Specialist */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-service">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-service">
                         {t.booking.service}
                       </label>
                       <select
                         id="bk-service"
                         value={serviceSlug}
                         onChange={(e) => setServiceSlug(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       >
                         {SERVICES.map((svc) => (
                           <option key={svc.slug} value={svc.slug}>
@@ -354,14 +354,14 @@ export function BookingModal() {
                     </div>
 
                     <div>
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-expert">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-expert">
                         {t.booking.specialist}
                       </label>
                       <select
                         id="bk-expert"
                         value={expertSlug}
                         onChange={(e) => setExpertSlug(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       >
                         <option value="any-specialist">{t.booking.anySpecialist}</option>
                         {EXPERTS.map((exp) => (
@@ -376,14 +376,14 @@ export function BookingModal() {
                   {/* Language & Method */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-lang">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-lang">
                         {t.booking.language}
                       </label>
                       <select
                         id="bk-lang"
                         value={consultationLang}
                         onChange={(e) => setConsultationLang(e.target.value as Language)}
-                        className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       >
                         <option value="en">{t.common.english}</option>
                         <option value="ur">{t.common.urdu}</option>
@@ -392,14 +392,14 @@ export function BookingModal() {
                     </div>
 
                     <div>
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-method">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-method">
                         {t.booking.method}
                       </label>
                       <select
                         id="bk-method"
                         value={consultationType}
                         onChange={(e) => setConsultationType(e.target.value as ConsultationMethod)}
-                        className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       >
                         <option value="whatsapp">{t.finder.types.whatsapp}</option>
                         <option value="phone">{t.finder.types.phone}</option>
@@ -411,14 +411,14 @@ export function BookingModal() {
                   {/* Time Zone, Date, Time */}
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                     <div className="sm:col-span-6">
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-tz">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-tz">
                         {t.booking.timeZone}
                       </label>
                       <select
                         id="bk-tz"
                         value={timeZone}
                         onChange={(e) => setTimeZone(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       >
                         {COMMON_TIMEZONES.map((tz) => (
                           <option key={tz.value} value={tz.value}>
@@ -428,7 +428,7 @@ export function BookingModal() {
                       </select>
                     </div>
                     <div className="sm:col-span-3">
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-date">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-date">
                         {t.booking.preferredDate}
                       </label>
                       <input
@@ -437,11 +437,11 @@ export function BookingModal() {
                         required
                         value={preferredDate}
                         onChange={(e) => setPreferredDate(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm tabular-nums-mono bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm tabular-nums-mono bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       />
                     </div>
                     <div className="sm:col-span-3">
-                      <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-time">
+                      <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-time">
                         {t.booking.preferredTime}
                       </label>
                       <input
@@ -450,15 +450,15 @@ export function BookingModal() {
                         required
                         value={preferredTime}
                         onChange={(e) => setPreferredTime(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm tabular-nums-mono bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                        className="w-full px-3 py-2.5 text-sm tabular-nums-mono bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                       />
                     </div>
                   </div>
 
                   {previewDates && (
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11.5px] text-[#A9B2BE] bg-[#091426]/80 px-3.5 py-2.5 border border-[#C6A35A]/15">
-                      <span className="inline-flex items-center gap-1.5 text-[#E5CD91]">
-                        <Clock className="w-3.5 h-3.5" />
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11.5px] text-[#4A5A53] bg-[#F1F5EF] px-3.5 py-2.5 border border-[#C6A15B]/30">
+                      <span className="inline-flex items-center gap-1.5 text-[#164E3C] font-medium">
+                        <Clock className="w-3.5 h-3.5 text-[#C6A15B]" />
                         PKT: {previewDates.pktPreview}
                       </span>
                       <span aria-hidden="true">·</span>
@@ -468,14 +468,14 @@ export function BookingModal() {
 
                   {/* Currency Preference */}
                   <div>
-                    <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-curr">
+                    <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-curr">
                       {t.booking.currencyPreference}
                     </label>
                     <select
                       id="bk-curr"
                       value={currency}
                       onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-                      className="w-full px-3 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] focus:border-[#E5CD91] focus:outline-none"
+                      className="w-full px-3 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] focus:border-[#164E3C] focus:outline-none"
                     >
                       {SUPPORTED_CURRENCIES.map((cur) => (
                         <option key={cur.code} value={cur.code}>
@@ -483,14 +483,14 @@ export function BookingModal() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-[11px] text-[#8F9BA9] mt-1.5 leading-relaxed">
+                    <p className="text-[11px] text-[#6E7E77] mt-1.5 leading-relaxed">
                       {t.booking.currencyNote}
                     </p>
                   </div>
 
                   {/* Confidential Notes */}
                   <div>
-                    <label className="block text-xs text-[#D6DCE5] mb-1.5" htmlFor="bk-notes">
+                    <label className="block text-xs font-medium text-[#26332D] mb-1.5" htmlFor="bk-notes">
                       {t.booking.notesLabel}
                     </label>
                     <textarea
@@ -500,30 +500,30 @@ export function BookingModal() {
                       placeholder={t.booking.notesPlaceholder}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#091426] border border-[#C6A35A]/25 text-[#F6F2E9] placeholder:text-[#6E7A8A] focus:border-[#E5CD91] focus:outline-none"
+                      className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#C6A15B]/40 text-[#26332D] placeholder:text-[#6E7E77] focus:border-[#164E3C] focus:outline-none"
                     />
                   </div>
 
                   {/* Consent Checkbox */}
-                  <label className="flex items-start gap-3 text-xs text-[#D6DCE5] cursor-pointer leading-relaxed">
+                  <label className="flex items-start gap-3 text-xs text-[#26332D] cursor-pointer leading-relaxed">
                     <input
                       type="checkbox"
                       checked={consentAccepted}
                       onChange={(e) => setConsentAccepted(e.target.checked)}
-                      className="mt-1 accent-[#C6A35A] w-4 h-4 shrink-0"
+                      className="mt-1 accent-[#164E3C] w-4 h-4 shrink-0"
                     />
                     <span>{t.booking.consentText}</span>
                   </label>
 
-                  <div className="pt-2 flex items-center justify-between gap-4">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-[#8F9BA9]">
-                      <ShieldCheck className="w-4 h-4 text-[#C6A35A] shrink-0" />
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-[#6E7E77]">
+                      <ShieldCheck className="w-4 h-4 text-[#164E3C] shrink-0" />
                       <span>HTTPS · Private Handling</span>
                     </span>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="px-6 py-3 bg-[#C6A35A] text-[#091426] font-semibold text-sm hover:bg-[#E5CD91] disabled:opacity-60 transition-colors cursor-pointer"
+                      className="px-6 py-3.5 bg-[#164E3C] text-white font-semibold text-sm hover:bg-[#26745A] disabled:opacity-60 transition-colors cursor-pointer"
                     >
                       {submitting ? t.booking.submitting : t.booking.submitButton}
                     </button>

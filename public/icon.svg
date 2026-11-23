@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#164E3C" />
+  <circle cx="256" cy="256" r="204" fill="none" stroke="#C6A15B" stroke-opacity="0.28" stroke-width="3" />
+  <g transform="translate(256 256)" fill="none" stroke="#C6A15B" stroke-width="10" stroke-linejoin="round">
+    <rect x="-112" y="-112" width="224" height="224" rx="8" />
+    <rect x="-112" y="-112" width="224" height="224" rx="8" transform="rotate(45)" />
+  </g>
+  <circle cx="256" cy="256" r="82" fill="#164E3C" stroke="#EAD9AD" stroke-opacity="0.45" stroke-width="3" />
+  <!-- Refined Gold Crescent -->
+  <path
+    d="M276 202 A56 56 0 1 0 276 310 A44 44 0 1 1 276 202 Z"
+    fill="#C6A15B"
+  />
+  <!-- Small 4-point star inside crescent curve -->
+  <path
+    d="M288 232 L293 248 L309 253 L293 258 L288 274 L283 258 L267 253 L283 248 Z"
+    fill="#EAD9AD"
+  />
+</svg>

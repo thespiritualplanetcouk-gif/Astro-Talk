@@ -1,19 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #060D1A;
-  --color-navy-900: #091426;
-  --color-navy-800: #0E1D36;
-  --color-navy-700: #142848;
-  --color-emerald-950: #08221C;
-  --color-emerald-900: #0C3028;
-  --color-emerald-800: #123D32;
-  --color-emerald-700: #195143;
-  --color-gold-500: #C6A35A;
-  --color-gold-400: #D8BA77;
-  --color-gold-300: #E5CD91;
+  /* Light Luxury Primary Palette */
+  --color-ivory-50: #FAF8F2;
   --color-ivory-100: #F6F2E9;
   --color-ivory-200: #EAE3D4;
+  --color-sage-100: #F1F5EF;
+  --color-sage-200: #E3EBE0;
+
+  /* Deep Emerald & Botanical Accent */
+  --color-emerald-950: #0C3025;
+  --color-emerald-900: #164E3C;
+  --color-emerald-800: #1E614B;
+  --color-emerald-700: #26745A;
+
+  /* Warm Gold Accents */
+  --color-gold-500: #C6A15B;
+  --color-gold-400: #D8BA77;
+  --color-gold-300: #EAD9AD;
+
+  /* Cosmic Contrast Navy (Measured Celestial Accents) */
+  --color-navy-950: #0D1828;
+  --color-navy-900: #15243A;
+  --color-navy-800: #1D314E;
+  --color-navy-700: #263E61;
+
+  /* Light Luxury Ink Tokens */
+  --color-ink-900: #26332D;
+  --color-ink-700: #4A5A53;
+  --color-ink-500: #6E7E77;
   --color-slate-muted: #A9B2BE;
 
   --font-display: "Cormorant Garamond", Georgia, serif;
@@ -26,8 +41,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    background-color: #091426;
-    color: #F6F2E9;
+    background-color: #FAF8F2;
+    color: #26332D;
     font-family: var(--font-body);
   }
 
@@ -63,6 +78,8 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #FAF8F2;
+    color: #26332D;
   }
 
   h1, h2, h3 {
@@ -70,7 +87,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid #C6A35A;
+    outline: 2px solid #C6A15B;
     outline-offset: 2px;
   }
 }
@@ -94,25 +111,54 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Subtle Islamic 8-fold geometric lattice background overlay */
-.islamic-lattice-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23C6A35A' stroke-opacity='0.06' stroke-width='0.75'%3E%3Cpolygon points='48,6 60,36 90,48 60,60 48,90 36,60 6,48 36,36'/%3E%3Crect x='22' y='22' width='52' height='52'/%3E%3Crect x='22' y='22' width='52' height='52' transform='rotate(45 48 48)'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 96px 96px;
-}
-
+/* Subtle Islamic 8-fold geometric lattice patterns for Light & Emerald/Cosmic sections */
 .islamic-lattice-ivory {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%230C3028' stroke-opacity='0.045' stroke-width='0.75'%3E%3Cpolygon points='48,6 60,36 90,48 60,60 48,90 36,60 6,48 36,36'/%3E%3Crect x='22' y='22' width='52' height='52'/%3E%3Crect x='22' y='22' width='52' height='52' transform='rotate(45 48 48)'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23164E3C' stroke-opacity='0.055' stroke-width='0.75'%3E%3Cpolygon points='48,6 60,36 90,48 60,60 48,90 36,60 6,48 36,36'/%3E%3Crect x='22' y='22' width='52' height='52'/%3E%3Crect x='22' y='22' width='52' height='52' transform='rotate(45 48 48)'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 96px 96px;
 }
 
-/* Hairline gold border shimmer on hover */
+.islamic-lattice-gold-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='112' viewBox='0 0 112 112'%3E%3Cg fill='none' stroke='%23C6A15B' stroke-opacity='0.11' stroke-width='0.8'%3E%3Cpolygon points='56,8 70,42 104,56 70,70 56,104 42,70 8,56 42,42'/%3E%3Ccircle cx='56' cy='56' r='22'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 112px 112px;
+}
+
+.islamic-lattice-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23EAD9AD' stroke-opacity='0.08' stroke-width='0.75'%3E%3Cpolygon points='48,6 60,36 90,48 60,60 48,90 36,60 6,48 36,36'/%3E%3Crect x='22' y='22' width='52' height='52'/%3E%3Crect x='22' y='22' width='52' height='52' transform='rotate(45 48 48)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 96px 96px;
+}
+
+/* Light Luxury Card Border & Soft Gold Illumination */
 .gold-hairline {
-  border: 1px solid rgba(198, 163, 90, 0.22);
-  transition: border-color 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(198, 161, 91, 0.30);
+  transition: border-color 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1), transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gold-hairline:hover {
-  border-color: rgba(229, 205, 145, 0.55);
+  border-color: rgba(198, 161, 91, 0.78);
+  box-shadow: 0 18px 40px -20px rgba(22, 78, 60, 0.16), 0 0 0 1px rgba(198, 161, 91, 0.22);
+}
+
+.gold-hairline-dark {
+  border: 1px solid rgba(234, 217, 173, 0.22);
+  transition: border-color 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gold-hairline-dark:hover {
+  border-color: rgba(234, 217, 173, 0.58);
+}
+
+/* Hide scrollbars cleanly for swipeable mobile carousels */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe-area utility for mobile bottom app bar */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 @keyframes slowOrbit {
@@ -133,6 +179,17 @@
   }
 }
 
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.28);
+  }
+}
+
 .animate-orbit-slow {
   animation: slowOrbit 140s linear infinite;
 }
@@ -141,12 +198,17 @@
   animation: slowOrbitReverse 190s linear infinite;
 }
 
+.animate-status-pulse {
+  animation: statusPulse 2.4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .animate-orbit-slow,
-  .animate-orbit-reverse {
+  .animate-orbit-reverse,
+  .animate-status-pulse {
     animation: none;
   }
 }

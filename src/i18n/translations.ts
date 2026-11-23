@@ -22,6 +22,7 @@ export interface UIStrings {
     subtitle: string;
     primaryCta: string;
     secondaryCta: string;
+    chatCta: string;
     trustItems: string[];
   };
   finder: {
@@ -182,11 +183,12 @@ export const TRANSLATIONS: Record<Language, UIStrings> = {
     },
     hero: {
       eyebrow: 'International Consultation Platform · Based in Pakistan',
-      headline: 'Find Clarity. Connect with the Right Expert.',
+      headline: 'Guidance for Your Journey. Clarity for Your Decisions.',
       subtitle:
-        'Explore astrology, spiritual guidance and personal consultations with experienced specialists. Connect from anywhere in the world in your preferred language.',
-      primaryCta: 'Explore Our Experts',
-      secondaryCta: 'Explore Services',
+        'Discover astrology, spiritual guidance and personal consultations through a platform designed to connect you with specialists across different fields. Explore services and connect from anywhere in the world.',
+      primaryCta: 'Find Your Expert',
+      secondaryCta: 'Explore Our Services',
+      chatCta: 'Chat With Us',
       trustItems: [
         'Experienced Specialists',
         'Private Consultations',
@@ -414,11 +416,12 @@ export const TRANSLATIONS: Record<Language, UIStrings> = {
     },
     hero: {
       eyebrow: 'بین الاقوامی مشاورتی پلیٹ فارم · پاکستان سے دنیا بھر میں',
-      headline: 'ذہنی سکون اور رہنمائی حاصل کریں۔ درست ماہر سے جڑیں۔',
+      headline: 'آپ کے سفر کے لیے رہنمائی۔ آپ کے فیصلوں کے لیے وضاحت۔',
       subtitle:
-        'تجربہ کار ماہرین کے ساتھ علمِ نجوم، روحانی رہنمائی اور ذاتی مشاورت حاصل کریں۔ دنیا کے کسی بھی حصے سے اپنی پسندیدہ زبان میں بااعتماد رابطہ کریں۔',
-      primaryCta: 'ہمارے ماہرین دیکھیں',
-      secondaryCta: 'خدمات دریافت کریں',
+        'علمِ نجوم، روحانی رہنمائی اور ذاتی مشاورت ایک ایسے پلیٹ فارم پر جو آپ کو مختلف شعبوں کے تجربہ کار ماہرین سے جوڑتا ہے۔ خدمات دریافت کریں اور دنیا کے کسی بھی حصے سے رابطہ کریں۔',
+      primaryCta: 'اپنا ماہر تلاش کریں',
+      secondaryCta: 'ہماری خدمات دیکھیں',
+      chatCta: 'لائیو چیٹ کریں',
       trustItems: [
         'تجربہ کار ماہرین',
         'مکمل رازداری کے ساتھ مشاورت',
@@ -640,11 +643,12 @@ export const TRANSLATIONS: Record<Language, UIStrings> = {
     },
     hero: {
       eyebrow: 'منصة استشارات دولية · مقرها باكستان وتخدم العالم',
-      headline: 'اعثر على الوضوح. تواصل مع الخبير المناسب.',
+      headline: 'إرشادٌ لرحلتك. ووضوحٌ لقراراتك.',
       subtitle:
-        'استكشف علم الفلك التراثي والإرشاد الروحي والاستشارات الشخصية مع مختصين ذوي خبرة. تواصل بخصوصية من أي مكان في العالم بلغتك المفضلة.',
-      primaryCta: 'استكشف خبراءنا',
-      secondaryCta: 'استعرض الخدمات',
+        'اكتشف علم الفلك التراثي والإرشاد الروحي والاستشارات الشخصية عبر منصة تربطك بمختصين في مختلف المجالات. استعرض الخدمات وتواصل بخصوصية من أي مكان في العالم.',
+      primaryCta: 'ابحث عن خبيرك',
+      secondaryCta: 'استكشف خدماتنا',
+      chatCta: 'تحدث معنا الآن',
       trustItems: [
         'مختصون ذوو خبرة',
         'استشارات خاصة وسرية',
