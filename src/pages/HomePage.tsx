@@ -8,8 +8,9 @@ import {
   Search,
   ShieldCheck,
   BookOpen,
-  MessageSquare,
-  Sparkles,
+  MessageCircle,
+  Phone,
+  Users,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useBooking } from '../context/BookingContext';
@@ -18,7 +19,15 @@ import { SERVICES } from '../data/services';
 import { EXPERTS } from '../data/experts';
 import { ZODIAC_SIGNS } from '../data/zodiac';
 import { KNOWLEDGE_ARTICLES, TOOLS_CATALOG } from '../data/knowledge';
+import {
+  CENTRAL_PHONE_NUMBER,
+  CENTRAL_WHATSAPP_NUMBER,
+  EXPERT_DISCOVERY_CATEGORIES,
+} from '../data/homepageContent';
 import { calculateCosmicSnapshot } from '../utils/astronomy';
+import { buildWhatsAppUrl } from '../utils/international';
+import { HeroSlider } from '../components/HeroSlider';
+import { CategorizedServicesSection } from '../components/CategorizedServicesSection';
 import { CelestialBackdrop } from '../components/CelestialBackdrop';
 import { ZodiacWheel } from '../components/ZodiacWheel';
 import { MoonPhaseVisual } from '../components/MoonPhaseVisual';
@@ -26,7 +35,6 @@ import { InternationalMap } from '../components/InternationalMap';
 import { ExpertCard } from '../components/ExpertCard';
 import { EditorialImage } from '../components/EditorialImage';
 import { InteractiveTiltCard } from '../components/InteractiveTiltCard';
-import { MagneticButton } from '../components/MagneticButton';
 import { QuranInspirationSection } from '../components/QuranInspirationSection';
 import { SeoHead } from '../components/SeoHead';
 import type { ConsultationMethod, Language } from '../types';
@@ -42,12 +50,12 @@ export function HomePage() {
   const [finderLang, setFinderLang] = useState<Language>(lang);
   const [finderType, setFinderType] = useState<ConsultationMethod>('whatsapp');
 
-  // Featured Experts inline filters
+  // Expert Discovery & inline filters
   const [expService, setExpService] = useState<string>('all');
   const [expLang, setExpLang] = useState<string>('all');
   const [expQuery, setExpQuery] = useState<string>('');
 
-  // Interactive Zodiac wheel state
+  // Interactive Zodiac / Daily Horoscope wheel state
   const [selectedZodiacSlug, setSelectedZodiacSlug] = useState<string>('sagittarius');
   const activeZodiac = useMemo(
     () => ZODIAC_SIGNS.find((z) => z.slug === selectedZodiacSlug) ?? ZODIAC_SIGNS[0],
@@ -94,116 +102,25 @@ export function HomePage() {
         ? cosmic.moonPhase.phaseNameAr
         : cosmic.moonPhase.phaseNameEn;
 
+  const centralWaHref = buildWhatsAppUrl(
+    CENTRAL_WHATSAPP_NUMBER,
+    'Assalam-o-Alaikum ASTROTALK PK, I would like to speak with a consultation specialist.'
+  );
+
   return (
     <>
       <SeoHead
-        title="ASTROTALK PK — International Astrology & Spiritual Consultation Platform"
-        description="Discover astrology, spiritual guidance and personal consultations through a platform designed to connect you with specialists in English, Urdu, and Arabic from anywhere in the world."
+        title="ASTROTALK PK — International Astrology, Istikhara & Spiritual Guidance Platform"
+        description="Check Today's Horoscope, create your Free Birth Chart, or connect privately with experienced specialists in Astrology, Online Istikhara, Rohani Guidance, Marriage & Family Counselling in English, Urdu, and Arabic."
       />
 
-      {/* SECTION 1: LIGHT LUXURY INTERACTIVE CELESTIAL HERO */}
-      <section className="relative min-h-[88vh] pt-24 pb-20 lg:pb-24 flex items-center overflow-hidden bg-gradient-to-b from-[#FAF8F2] via-[#F7F5EE] to-[#F1F5EF]">
-        {/* Subtle Warm Gold & Botanical Radial Light Layers */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-28 end-0 w-[560px] h-[560px] rounded-full bg-radial from-[#EAD9AD]/45 via-[#FAF8F2]/10 to-transparent blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 start-0 w-[480px] h-[480px] rounded-full bg-radial from-[#164E3C]/10 via-transparent to-transparent blur-3xl"
-        />
-        <div className="pointer-events-none absolute inset-0 islamic-lattice-gold-light opacity-75" />
+      {/* SECTION 1: FULL-WIDTH RESPONSIVE HERO SLIDER + 6-ACTION CONVERSION STRIP */}
+      <HeroSlider />
 
-        {/* Interactive Pointer & Touch-Reactive Celestial Starfield */}
-        <CelestialBackdrop density="hero" theme="light" />
-
-        <div className="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-            {/* Editorial Copy Column */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-7 space-y-6"
-            >
-              <p className="text-xs tracking-[0.2em] uppercase text-[#164E3C] font-semibold">
-                {t.hero.eyebrow}
-              </p>
-
-              <h1 className="font-display text-[clamp(2.45rem,4.7vw,4.5rem)] leading-[1.06] font-semibold text-[#15243A] max-w-2xl">
-                {t.hero.headline}
-              </h1>
-
-              <p className="text-base sm:text-lg text-[#4A5A53] leading-relaxed max-w-xl">
-                {t.hero.subtitle}
-              </p>
-
-              {/* Magnetic Primary CTA + Secondary Services CTA + Live Chat Trigger */}
-              <div className="pt-2 flex flex-wrap items-center gap-3.5">
-                <MagneticButton>
-                  <Link
-                    to="/experts"
-                    className="inline-flex items-center gap-2.5 min-h-[48px] px-7 py-3.5 bg-[#164E3C] text-white font-semibold text-sm tracking-wide hover:bg-[#26745A] shadow-[0_14px_30px_-14px_rgba(22,78,60,0.55)] active:scale-[0.98] transition-all whitespace-nowrap"
-                  >
-                    <span>{t.hero.primaryCta}</span>
-                    <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-                  </Link>
-                </MagneticButton>
-
-                <Link
-                  to="/services"
-                  className="inline-flex items-center gap-2 min-h-[48px] px-6 py-3.5 bg-white border border-[#C6A15B]/65 text-[#15243A] text-sm font-semibold hover:border-[#164E3C] hover:text-[#164E3C] active:scale-[0.98] transition-all whitespace-nowrap"
-                >
-                  <span>{t.hero.secondaryCta}</span>
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={openChat}
-                  className="inline-flex items-center gap-2 min-h-[48px] px-5 py-3.5 bg-[#F1F5EF] border border-[#164E3C]/25 text-[#164E3C] text-sm font-semibold hover:bg-[#164E3C] hover:text-white active:scale-[0.98] transition-all whitespace-nowrap cursor-pointer"
-                >
-                  <MessageSquare className="w-4 h-4 text-[#C6A15B]" />
-                  <span>{t.hero.chatCta}</span>
-                </button>
-              </div>
-
-              {/* Compact Unboxed Trust Strip */}
-              <div className="pt-6 border-t border-[#C6A15B]/35 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#4A5A53]">
-                {t.hero.trustItems.map((item, idx) => (
-                  <span key={item} className="inline-flex items-center gap-5">
-                    <span className="text-[#164E3C] font-medium">{item}</span>
-                    {idx < t.hero.trustItems.length - 1 && (
-                      <span aria-hidden="true" className="text-[#C6A15B]">
-                        ·
-                      </span>
-                    )}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Draggable / Swipeable Interactive Light-Luxury Zodiac Wheel */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-5"
-            >
-              <ZodiacWheel
-                selectedSlug={selectedZodiacSlug}
-                onSelect={(slug) => setSelectedZodiacSlug(slug)}
-                size="hero"
-                theme="light"
-              />
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 2: QUICK CONSULTATION FINDER (DEEP EMERALD JEWEL ANCHOR) */}
-      <section className="relative z-20 -mt-10 pb-16 bg-[#FAF8F2]">
+      {/* SECTION 2: QUICK CONSULTATION FINDER (DEEP EMERALD ANCHOR) */}
+      <section className="py-12 lg:py-14 bg-[#FAF8F2]">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-[#164E3C] border border-[#C6A15B]/50 p-6 sm:p-8 shadow-[0_24px_50px_-24px_rgba(22,78,60,0.45)] islamic-lattice-bg">
+          <div className="bg-[#164E3C] border border-[#C6A15B]/50 p-6 sm:p-8 shadow-[0_24px_50px_-24px_rgba(22,78,60,0.42)] islamic-lattice-bg">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-6 border-b border-[#C6A15B]/25">
               <div>
                 <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white">
@@ -284,187 +201,23 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 3: POPULAR SERVICES (BRIGHT WARM IVORY + INTERACTIVE TILT + MOBILE SWIPE CAROUSEL) */}
-      <section className="py-16 lg:py-20 bg-[#FAF8F2]">
+      {/* SECTION 3: 5 CATEGORIZED SERVICE SECTIONS (ASTROLOGY, ROHANI, MARRIAGE & ISTIKHARA, BUSINESS, HEALTH & WELLBEING) */}
+      <CategorizedServicesSection />
+
+      {/* SECTION 4: EXPERT CATEGORY DISCOVERY ("اپنے مسئلے کے مطابق Expert تلاش کریں") + LIVE SPECIALIST DIRECTORY */}
+      <section id="expert-discovery" className="py-20 bg-white border-y border-[#EAD9AD]/70">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div className="max-w-2xl">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div className="max-w-3xl">
               <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
-                01 — {t.nav.allServices}
+                Specialist Marketplace · Transparent Qualifications &amp; Upfront Fees
               </p>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
-                {t.sections.servicesTitle}
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A] leading-tight">
+                اپنے مسئلے کے مطابق Expert تلاش کریں
               </h2>
               <p className="text-sm sm:text-base text-[#4A5A53] mt-3 leading-relaxed">
-                {t.sections.servicesSubtitle}
-              </p>
-            </div>
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#164E3C] hover:text-[#C6A15B] transition-colors whitespace-nowrap shrink-0"
-            >
-              <span>{t.sections.viewAllServices}</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Lead 2 Marquee Services (Asymmetric Split with Interactive Tilt) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {SERVICES.slice(0, 2).map((svc, idx) => (
-              <motion.div
-                key={svc.slug}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.45, delay: idx * 0.08 }}
-              >
-                <InteractiveTiltCard maxTilt={3.5} className="h-full">
-                  <article className="group h-full relative overflow-hidden bg-white gold-hairline grid grid-cols-1 sm:grid-cols-12">
-                    <div className="sm:col-span-5 relative aspect-[4/3] sm:aspect-auto overflow-hidden bg-[#F1F5EF]">
-                      <EditorialImage
-                        src={svc.image}
-                        alt={loc(svc.title)}
-                        objectPosition={svc.imagePosition}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
-                        fallbackTitle={loc(svc.title)}
-                      />
-                    </div>
-                    <div className="sm:col-span-7 p-6 sm:p-7 flex flex-col justify-between">
-                      <div>
-                        <span className="tabular-nums-mono text-xs text-[#C6A15B] font-semibold">
-                          {svc.order} · {svc.domain === 'astrology' ? 'Astronomy & Chart' : 'Quran & Sunnah'}
-                        </span>
-                        <h3 className="font-display text-2xl sm:text-3xl font-semibold text-[#15243A] mt-2">
-                          <Link to={`/services/${svc.slug}`} className="hover:text-[#164E3C] transition-colors">
-                            {loc(svc.title)}
-                          </Link>
-                        </h3>
-                        <p className="text-sm text-[#4A5A53] mt-3 leading-relaxed">
-                          {loc(svc.shortDescription)}
-                        </p>
-                      </div>
-                      <div className="mt-6 pt-4 border-t border-[#EAD9AD]/70">
-                        <Link
-                          to={`/services/${svc.slug}`}
-                          className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-[#164E3C] group-hover:text-[#C6A15B] group-hover:gap-3 transition-all"
-                        >
-                          <span>{t.sections.exploreService}</span>
-                          <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                </InteractiveTiltCard>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Remaining 8 Services: Swipeable Carousel on Mobile, 4-Column Luxury Grid on Desktop */}
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 no-scrollbar">
-            {SERVICES.slice(2).map((svc, idx) => (
-              <motion.div
-                key={svc.slug}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-30px' }}
-                transition={{ duration: 0.4, delay: (idx % 4) * 0.06 }}
-                className="shrink-0 w-[80vw] max-w-[300px] sm:w-auto sm:max-w-none snap-start"
-              >
-                <InteractiveTiltCard maxTilt={4} className="h-full">
-                  <article className="group h-full bg-white gold-hairline flex flex-col overflow-hidden">
-                    <div className="relative aspect-[16/10] overflow-hidden bg-[#F1F5EF]">
-                      <EditorialImage
-                        src={svc.image}
-                        alt={loc(svc.title)}
-                        objectPosition={svc.imagePosition}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
-                        fallbackTitle={loc(svc.title)}
-                      />
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <span className="tabular-nums-mono text-[11px] font-semibold text-[#C6A15B]">
-                          {svc.order}
-                        </span>
-                        <h3 className="font-display text-xl font-semibold text-[#15243A] mt-1">
-                          <Link to={`/services/${svc.slug}`} className="hover:text-[#164E3C] transition-colors">
-                            {loc(svc.title)}
-                          </Link>
-                        </h3>
-                        <p className="text-xs text-[#4A5A53] mt-2 leading-relaxed line-clamp-3">
-                          {loc(svc.shortDescription)}
-                        </p>
-                      </div>
-                      <div className="mt-5 pt-3 border-t border-[#EAD9AD]/70">
-                        <Link
-                          to={`/services/${svc.slug}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#164E3C] group-hover:text-[#C6A15B] transition-colors"
-                        >
-                          <span>{t.sections.exploreService}</span>
-                          <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                </InteractiveTiltCard>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Post-Services Gentle Conversion Banner */}
-          <div className="mt-10 p-6 sm:p-7 bg-[#F1F5EF] border border-[#C6A15B]/35 flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div className="flex items-start gap-3.5">
-              <Sparkles className="w-5 h-5 text-[#C6A15B] shrink-0 mt-1" />
-              <div>
-                <h3 className="font-display text-2xl font-semibold text-[#15243A]">
-                  {lang === 'ur'
-                    ? 'سمجھ نہیں آ رہا کہ کون سی خدمت آپ کے لیے موزوں ہے؟'
-                    : lang === 'ar'
-                      ? 'هل تحتار في اختيار التخصص الأنسب لحالتك؟'
-                      : 'Unsure Which Service Suits Your Situation Best?'}
-                </h3>
-                <p className="text-sm text-[#4A5A53] mt-1">
-                  {lang === 'ur'
-                    ? 'ہماری سپورٹ ٹیم آپ کو مناسب شعبے اور ماہر کے انتخاب میں فوری رہنمائی فراہم کر سکتی ہے۔'
-                    : lang === 'ar'
-                      ? 'فريق التنسيق جاهز لمساعدتك في اختيار المختص المناسب بخصوصية تامة.'
-                      : 'Speak with our coordination desk via live chat or request a private consultation slot.'}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={openChat}
-                className="min-h-[44px] px-5 py-2.5 bg-white border border-[#164E3C]/30 text-[#164E3C] text-xs font-semibold hover:bg-[#164E3C] hover:text-white transition-colors cursor-pointer"
-              >
-                {t.hero.chatCta}
-              </button>
-              <button
-                type="button"
-                onClick={() => openBooking({ language: lang })}
-                className="min-h-[44px] px-5 py-2.5 bg-[#164E3C] text-white text-xs font-semibold hover:bg-[#26745A] transition-colors cursor-pointer"
-              >
-                {t.nav.bookConsultation}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 4: FEATURED EXPERTS MARKETPLACE (WHITE SURFACE + MOBILE SWIPE CAROUSEL) */}
-      <section className="py-20 bg-white border-y border-[#EAD9AD]/70">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-            <div className="max-w-2xl">
-              <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
-                02 — {t.nav.ourExperts}
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
-                {t.sections.expertsTitle}
-              </h2>
-              <p className="text-sm sm:text-base text-[#4A5A53] mt-3">
-                {t.sections.expertsSubtitle}
+                Select a specialist category below to filter experts by discipline, consultation
+                language, and availability—or explore the full directory.
               </p>
             </div>
             <Link
@@ -476,12 +229,62 @@ export function HomePage() {
             </Link>
           </div>
 
+          {/* 8 Interactive Expert Category Tiles */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-10">
+            {EXPERT_DISCOVERY_CATEGORIES.map((cat) => {
+              const isSelected = expService === cat.serviceSlug;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() =>
+                    setExpService((prev) => (prev === cat.serviceSlug ? 'all' : cat.serviceSlug))
+                  }
+                  className={`text-start p-4 border transition-all cursor-pointer flex flex-col justify-between min-h-[96px] ${
+                    isSelected
+                      ? 'bg-[#164E3C] text-white border-[#164E3C] shadow-sm'
+                      : 'bg-[#FAF8F2] text-[#15243A] border-[#C6A15B]/40 hover:border-[#164E3C] hover:bg-white'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-display text-lg font-semibold leading-snug">
+                      {cat.label}
+                    </span>
+                    <Users
+                      className={`w-4 h-4 shrink-0 mt-1 ${
+                        isSelected ? 'text-[#EAD9AD]' : 'text-[#C6A15B]'
+                      }`}
+                    />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <span
+                      dir="rtl"
+                      lang="ur"
+                      className={`font-urdu text-xs ${
+                        isSelected ? 'text-[#EAD9AD]' : 'text-[#566760]'
+                      }`}
+                    >
+                      {cat.urduSub}
+                    </span>
+                    <span
+                      className={`text-[11px] font-semibold ${
+                        isSelected ? 'text-white' : 'text-[#164E3C]'
+                      }`}
+                    >
+                      {isSelected ? 'Active' : 'Filter'}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Transparent Editorial Sample Disclosure */}
-          <div className="mb-8 px-4 py-3 bg-[#F1F5EF] border border-[#164E3C]/20 text-xs text-[#26332D] leading-relaxed">
+          <div className="mb-8 px-4 py-3.5 bg-[#F1F5EF] border border-[#164E3C]/20 text-xs text-[#26332D] leading-relaxed">
             {t.sections.sampleNotice}
           </div>
 
-          {/* Interactive Filter & Search Controls */}
+          {/* Interactive Search & Language Filter Controls */}
           <div className="mb-8 grid grid-cols-1 md:grid-cols-12 gap-3">
             <div className="md:col-span-5 relative">
               <Search className="w-4 h-4 text-[#164E3C] absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -555,165 +358,35 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 5: AUTHENTIC QURANIC INSPIRATION SECTION */}
+      {/* SECTION 5: AUTHENTIC QURANIC VERSE INSPIRATION SECTION (AR-RA'D 13:28, ASH-SHARH 94:5, AT-TALAQ 65:3, AL-HADID 57:4) */}
       <QuranInspirationSection />
 
-      {/* SECTION 6: HOW IT WORKS (THREE-STEP ARCHITECTURAL PROGRESSION ON WARM IVORY) */}
-      <section className="py-20 bg-[#FAF8F2]">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mb-14">
-            <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
-              03 — Process
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
-              {t.sections.howItWorksTitle}
-            </h2>
-            <p className="text-sm sm:text-base text-[#4A5A53] mt-3">{t.sections.howItWorksSubtitle}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-7 relative">
-            <div
-              aria-hidden="true"
-              className="hidden md:block absolute top-11 inset-x-12 h-px bg-gradient-to-r from-[#C6A15B]/20 via-[#C6A15B] to-[#C6A15B]/20"
-            />
-            {t.sections.steps.map((step, i) => (
-              <motion.div
-                key={step.num}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: i * 0.1 }}
-                className="relative bg-white gold-hairline p-7"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-[#164E3C] border border-[#C6A15B]/60 tabular-nums-mono text-sm font-semibold text-[#EAD9AD] mb-6">
-                  {step.num}
-                </div>
-                <h3 className="font-display text-2xl font-semibold text-[#15243A]">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-[#4A5A53] mt-3 leading-relaxed">{step.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 7: WHY CHOOSE ASTROTALK PK (DEEP EMERALD LUXURY FEATURE SECTION) */}
-      <section className="py-20 bg-[#164E3C] text-white islamic-lattice-bg">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            <div className="lg:col-span-4 lg:sticky lg:top-28">
-              <p className="text-xs tracking-[0.18em] uppercase text-[#EAD9AD] font-semibold mb-3">
-                04 — Institutional Standard
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight">
-                {t.sections.whyChooseTitle}
-              </h2>
-              <p className="text-sm sm:text-base text-[#D8E5DF] mt-4 leading-relaxed">
-                {t.sections.whyChooseSubtitle}
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => openBooking({ language: lang })}
-                  className="px-6 py-3.5 bg-[#C6A15B] text-[#15243A] text-sm font-semibold hover:bg-[#EAD9AD] transition-colors cursor-pointer"
-                >
-                  {t.nav.bookConsultation}
-                </button>
-              </div>
-            </div>
-
-            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
-              {t.sections.whyPoints.map((pt, idx) => (
-                <motion.div
-                  key={pt.title}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: (idx % 4) * 0.05 }}
-                  className="pt-5 border-t border-[#EAD9AD]/25"
-                >
-                  <span className="tabular-nums-mono text-xs text-[#EAD9AD] font-semibold">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className="font-display text-2xl font-semibold text-white mt-1.5">
-                    {pt.title}
-                  </h3>
-                  <p className="text-sm text-[#D8E5DF] mt-2 leading-relaxed">{pt.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 8: FREE ASTROLOGY, ABJAD & CALENDAR TOOLS (WARM IVORY) */}
-      <section className="py-20 bg-[#FAF8F2]">
+      {/* SECTION 6: TODAY'S HOROSCOPE & INTERACTIVE 12-SIGN ZODIAC WHEEL */}
+      <section
+        id="zodiac-horoscope"
+        className="py-20 bg-[#FAF8F2] border-b border-[#C6A15B]/30 scroll-mt-20"
+      >
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div className="max-w-2xl">
               <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
-                05 — Interactive Instruments
+                Aaj Ka Horoscope · Interactive 12-Sign Zodiac Wheel
               </p>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
-                {t.sections.toolsTitle}
+                Aaj Ka Horoscope – آج کا برج اور فلکیاتی رہنمائی
               </h2>
-              <p className="text-sm sm:text-base text-[#4A5A53] mt-3 leading-relaxed">
-                {t.sections.toolsSubtitle}
+              <p className="text-sm sm:text-base text-[#4A5A53] mt-3">
+                Drag or swipe the Zodiac Wheel below—or select your sign—to inspect today&apos;s
+                calculated astronomical placements and reflective sign insights.
               </p>
             </div>
             <Link
-              to="/tools"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#164E3C] hover:text-[#C6A15B] transition-colors whitespace-nowrap shrink-0"
+              to="/tools/birth-chart"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#164E3C] hover:text-[#C6A15B] whitespace-nowrap shrink-0"
             >
-              <span>{t.sections.viewAllTools}</span>
+              <span>Create My Free Birth Chart</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {TOOLS_CATALOG.slice(0, 9).map((tool, idx) => (
-              <InteractiveTiltCard key={tool.slug} maxTilt={3.5} className="h-full">
-                <Link
-                  to={`/tools/${tool.slug}`}
-                  className="group h-full p-6 bg-white gold-hairline flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-3">
-                      <span className="tabular-nums-mono font-semibold text-[#C6A15B]">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
-                      <span className="capitalize text-[#6E7E77]">{tool.category}</span>
-                    </div>
-                    <h3 className="font-display text-2xl font-semibold text-[#15243A] group-hover:text-[#164E3C] transition-colors">
-                      {loc(tool.title)}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#4A5A53] mt-2.5 leading-relaxed">
-                      {loc(tool.shortDescription)}
-                    </p>
-                  </div>
-                  <div className="mt-5 pt-3 border-t border-[#EAD9AD]/70 flex items-center justify-between text-xs font-semibold text-[#164E3C] group-hover:text-[#C6A15B]">
-                    <span>{t.sections.openTool}</span>
-                    <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-              </InteractiveTiltCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 9: INTERACTIVE 12-SIGN ZODIAC EXPERIENCE (SOFT SAGE) */}
-      <section className="py-20 bg-[#F1F5EF] border-y border-[#C6A15B]/30 islamic-lattice-ivory">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mb-12">
-            <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
-              06 — Twelve Ecliptic Divisions
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
-              {t.sections.zodiacTitle}
-            </h2>
-            <p className="text-sm sm:text-base text-[#4A5A53] mt-3">{t.sections.zodiacSubtitle}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -727,7 +400,7 @@ export function HomePage() {
             </div>
 
             <div className="lg:col-span-7 space-y-6">
-              {/* Selected Sign Editorial Panel */}
+              {/* Selected Sign Daily Horoscope & Reflection Panel */}
               <div className="bg-white border border-[#C6A15B]/45 p-7 sm:p-8 shadow-sm">
                 <div className="flex flex-wrap items-baseline justify-between gap-4 pb-5 border-b border-[#EAD9AD]">
                   <div>
@@ -746,6 +419,20 @@ export function HomePage() {
                   </div>
                 </div>
 
+                {/* Live Ephemeris Alignment Context */}
+                <div className="mt-4 p-3.5 bg-[#F1F5EF] border border-[#164E3C]/15 text-xs text-[#26332D] flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <span className="font-semibold text-[#164E3C]">Today&apos;s Sky Context:</span>
+                  <span className="tabular-nums-mono">
+                    Sun in {cosmic.sun.position.signSymbol} {cosmic.sun.position.signName} (
+                    {cosmic.sun.position.formattedDegree})
+                  </span>
+                  <span aria-hidden="true">·</span>
+                  <span className="tabular-nums-mono">
+                    Moon in {cosmic.moon.position.signSymbol} {cosmic.moon.position.signName} (
+                    {cosmic.moonPhase.illuminationPercent}% Lit)
+                  </span>
+                </div>
+
                 <p className="text-sm sm:text-base text-[#26332D] mt-5 leading-relaxed">
                   {loc(activeZodiac.summary)}
                 </p>
@@ -754,14 +441,27 @@ export function HomePage() {
                   “{loc(activeZodiac.reflectionPrompt)}”
                 </p>
 
-                <div className="mt-6">
+                <div className="mt-6 flex flex-wrap items-center gap-3">
                   <Link
                     to={`/zodiac/${activeZodiac.slug}`}
-                    className="inline-flex items-center gap-2 px-5 py-3 bg-[#164E3C] text-white font-semibold text-xs hover:bg-[#26745A] transition-colors"
+                    className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-[#164E3C] text-white font-semibold text-xs hover:bg-[#26745A] transition-colors"
                   >
                     <span>{t.sections.exploreSign}</span>
                     <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openBooking({
+                        serviceSlug: 'astrology',
+                        language: lang,
+                        initialNote: `Horoscope & chart consultation for ${activeZodiac.name.en}.`,
+                      })
+                    }
+                    className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-[#FAF8F2] border border-[#C6A15B]/55 text-[#15243A] font-semibold text-xs hover:border-[#164E3C] transition-colors cursor-pointer"
+                  >
+                    <span>Consult an Astrologer</span>
+                  </button>
                 </div>
               </div>
 
@@ -788,14 +488,14 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 10: TODAY'S CALCULATED SKY & LUNAR INSIGHTS (MEASURED COSMIC NAVY CONTRAST SECTION) */}
+      {/* SECTION 7: TODAY'S CALCULATED SKY & LUNAR INSIGHTS (MEASURED COSMIC NAVY CONTRAST SECTION) */}
       <section className="relative py-20 bg-[#15243A] text-[#FAF8F2] overflow-hidden">
         <CelestialBackdrop density="subtle" theme="dark" />
         <div className="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div className="max-w-2xl">
               <p className="text-xs tracking-[0.18em] uppercase text-[#EAD9AD] mb-3">
-                07 — Live Astronomical Ephemeris
+                Live Astronomical Ephemeris
               </p>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-white">
                 {t.sections.cosmicTitle}
@@ -888,13 +588,118 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 11: HONEST TESTIMONIALS & VERIFICATION POLICY (WARM IVORY) */}
+      {/* SECTION 8: FREE ASTROLOGY, ABJAD & CALENDAR TOOLS (WARM IVORY) */}
+      <section className="py-20 bg-[#FAF8F2]">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div className="max-w-2xl">
+              <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
+                Free Online Calculators · Private Browser Execution
+              </p>
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
+                {t.sections.toolsTitle}
+              </h2>
+              <p className="text-sm sm:text-base text-[#4A5A53] mt-3 leading-relaxed">
+                {t.sections.toolsSubtitle}
+              </p>
+            </div>
+            <Link
+              to="/tools"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#164E3C] hover:text-[#C6A15B] transition-colors whitespace-nowrap shrink-0"
+            >
+              <span>{t.sections.viewAllTools}</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {TOOLS_CATALOG.slice(0, 9).map((tool, idx) => (
+              <InteractiveTiltCard key={tool.slug} maxTilt={3.5} className="h-full">
+                <Link
+                  to={`/tools/${tool.slug}`}
+                  className="group h-full p-6 bg-white gold-hairline flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-3">
+                      <span className="tabular-nums-mono font-semibold text-[#C6A15B]">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className="capitalize text-[#6E7E77]">{tool.category}</span>
+                    </div>
+                    <h3 className="font-display text-2xl font-semibold text-[#15243A] group-hover:text-[#164E3C] transition-colors">
+                      {loc(tool.title)}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#4A5A53] mt-2.5 leading-relaxed">
+                      {loc(tool.shortDescription)}
+                    </p>
+                  </div>
+                  <div className="mt-5 pt-3 border-t border-[#EAD9AD]/70 flex items-center justify-between text-xs font-semibold text-[#164E3C] group-hover:text-[#C6A15B]">
+                    <span>{t.sections.openTool}</span>
+                    <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              </InteractiveTiltCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 9: HOW IT WORKS + WHY CHOOSE ASTROTALK PK (DEEP EMERALD LUXURY FEATURE SECTION) */}
+      <section className="py-20 bg-[#164E3C] text-white islamic-lattice-bg">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-4 lg:sticky lg:top-28">
+              <p className="text-xs tracking-[0.18em] uppercase text-[#EAD9AD] font-semibold mb-3">
+                Institutional Standard
+              </p>
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight">
+                {t.sections.whyChooseTitle}
+              </h2>
+              <p className="text-sm sm:text-base text-[#D8E5DF] mt-4 leading-relaxed">
+                {t.sections.whyChooseSubtitle}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => openBooking({ language: lang })}
+                  className="min-h-[44px] px-6 py-3 bg-[#C6A15B] text-[#15243A] text-sm font-semibold hover:bg-[#EAD9AD] transition-colors cursor-pointer"
+                >
+                  {t.nav.bookConsultation}
+                </button>
+              </div>
+            </div>
+
+            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
+              {t.sections.whyPoints.map((pt, idx) => (
+                <motion.div
+                  key={pt.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: (idx % 4) * 0.05 }}
+                  className="pt-5 border-t border-[#EAD9AD]/25"
+                >
+                  <span className="tabular-nums-mono text-xs text-[#EAD9AD] font-semibold">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="font-display text-2xl font-semibold text-white mt-1.5">
+                    {pt.title}
+                  </h3>
+                  <p className="text-sm text-[#D8E5DF] mt-2 leading-relaxed">{pt.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 10: HONEST TESTIMONIALS & VERIFICATION POLICY (WARM IVORY) */}
       <section className="py-16 bg-[#FAF8F2] border-b border-[#EAD9AD]/70">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-5">
               <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-2">
-                08 — Integrity &amp; Transparency
+                Integrity &amp; Transparency
               </p>
               <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[#15243A]">
                 {t.sections.testimonialsTitle}
@@ -923,13 +728,13 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 12: KNOWLEDGE CENTER (CRISP WHITE) */}
+      {/* SECTION 11: KNOWLEDGE CENTER (CRISP WHITE) */}
       <section className="py-20 bg-white">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div className="max-w-2xl">
               <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold mb-3">
-                09 — Editorial Library
+                Editorial Library
               </p>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A]">
                 {t.sections.knowledgeTitle}
@@ -997,13 +802,13 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 13: INTERNATIONAL AUDIENCE (SOFT SAGE) */}
+      {/* SECTION 12: INTERNATIONAL AUDIENCE (SOFT SAGE) */}
       <section className="py-20 bg-[#F1F5EF] border-t border-[#C6A15B]/30">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-5 space-y-5">
               <p className="text-xs tracking-[0.18em] uppercase text-[#164E3C] font-semibold">
-                10 — Global Diaspora Access
+                Global Diaspora Access
               </p>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#15243A] leading-tight">
                 {t.sections.internationalTitle}
@@ -1018,14 +823,14 @@ export function HomePage() {
                 <button
                   type="button"
                   onClick={() => openBooking({ language: lang })}
-                  className="px-6 py-3.5 bg-[#164E3C] text-white font-semibold text-sm hover:bg-[#26745A] transition-colors cursor-pointer"
+                  className="min-h-[44px] px-6 py-3 bg-[#164E3C] text-white font-semibold text-sm hover:bg-[#26745A] transition-colors cursor-pointer"
                 >
                   {t.nav.bookConsultation}
                 </button>
                 <button
                   type="button"
                   onClick={openChat}
-                  className="px-6 py-3.5 bg-white border border-[#C6A15B]/55 text-[#164E3C] font-semibold text-sm hover:border-[#164E3C] transition-colors cursor-pointer"
+                  className="min-h-[44px] px-6 py-3 bg-white border border-[#C6A15B]/55 text-[#164E3C] font-semibold text-sm hover:border-[#164E3C] transition-colors cursor-pointer"
                 >
                   {t.hero.chatCta}
                 </button>
@@ -1040,35 +845,39 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 14: FINAL CONVERSION CALL TO ACTION */}
+      {/* SECTION 13: FINAL CONVERSION CALL TO ACTION (WHATSAPP, CALL, LIVE CHAT & BOOKING) */}
       <section className="py-20 bg-[#FAF8F2] islamic-lattice-ivory border-t border-[#C6A15B]/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
-          <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#15243A] leading-tight">
+          <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#15243A] leading-tight text-balance">
             {t.sections.finalCtaHeadline}
           </h2>
           <p className="text-base text-[#4A5A53] max-w-2xl mx-auto leading-relaxed">
             {t.sections.finalCtaSubtext}
           </p>
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3.5">
-            <Link
-              to="/experts"
-              className="px-7 py-3.5 bg-[#164E3C] text-white font-semibold text-sm hover:bg-[#26745A] transition-colors"
+            <a
+              href={centralWaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 min-h-[48px] px-7 py-3.5 bg-[#164E3C] text-white font-semibold text-sm hover:bg-[#26745A] transition-colors"
             >
-              {t.sections.findAnExpert}
-            </Link>
+              <MessageCircle className="w-4 h-4 text-[#EAD9AD]" />
+              <span>WhatsApp Consultation</span>
+            </a>
+            <a
+              href={`tel:${CENTRAL_PHONE_NUMBER.replace(/\s+/g, '')}`}
+              className="inline-flex items-center gap-2 min-h-[48px] px-6 py-3.5 bg-white border border-[#C6A15B]/65 text-[#15243A] font-semibold text-sm hover:border-[#164E3C] hover:text-[#164E3C] transition-colors"
+            >
+              <Phone className="w-4 h-4 text-[#164E3C]" />
+              <span>Call an Expert</span>
+            </a>
             <button
               type="button"
-              onClick={openChat}
-              className="px-7 py-3.5 bg-white border border-[#C6A15B]/65 text-[#15243A] font-semibold text-sm hover:border-[#164E3C] hover:text-[#164E3C] transition-colors cursor-pointer"
+              onClick={() => openBooking({ language: lang, consultationType: 'appointment' })}
+              className="min-h-[48px] px-7 py-3.5 bg-[#C6A15B] text-[#15243A] font-semibold text-sm hover:bg-[#EAD9AD] transition-colors cursor-pointer"
             >
-              {t.hero.chatCta}
+              Book an Appointment
             </button>
-            <Link
-              to="/contact"
-              className="px-7 py-3.5 bg-[#F1F5EF] border border-[#164E3C]/25 text-[#164E3C] font-semibold text-sm hover:bg-[#164E3C] hover:text-white transition-colors"
-            >
-              {t.sections.contactUs}
-            </Link>
           </div>
         </div>
       </section>

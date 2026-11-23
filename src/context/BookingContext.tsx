@@ -6,6 +6,7 @@ export interface BookingPrefill {
   expertSlug?: string;
   language?: Language;
   consultationType?: ConsultationMethod;
+  initialNote?: string;
 }
 
 interface BookingContextValue {

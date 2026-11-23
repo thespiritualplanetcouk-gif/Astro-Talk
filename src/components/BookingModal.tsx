@@ -55,6 +55,7 @@ export function BookingModal() {
       if (prefill.language) setConsultationLang(prefill.language);
       else setConsultationLang(lang);
       if (prefill.consultationType) setConsultationType(prefill.consultationType);
+      setNotes(prefill.initialNote ?? '');
 
       // Detect browser timezone if available
       try {
